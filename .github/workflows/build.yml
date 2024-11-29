@@ -257,6 +257,7 @@ jobs:
         cd project
         ./build.sh uboot
         ./build.sh kernel
+        ../scripts/wifi/add_rtl8852be.sh
         ../scripts/3rd/add_r8125.sh
 
     - name: Build sd image
