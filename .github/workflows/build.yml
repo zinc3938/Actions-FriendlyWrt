@@ -257,11 +257,7 @@ jobs:
         cd project
         ./build.sh uboot
         ./build.sh kernel
-        case ${{ matrix.CPU }} in
-        rk3568)
-            ../scripts/3rd/add_r8125.sh
-            ;;
-        esac
+        ../scripts/3rd/add_r8125.sh
 
     - name: Build sd image
       id: build_sd_image
