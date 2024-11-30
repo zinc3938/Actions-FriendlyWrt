@@ -1,14 +1,18 @@
 #!/bin/bash
 set -eu
 top_path=$(pwd)
+
+# prepare toolchain and get the kernel version
+export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 pushd kernel
-kernel_ver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`
+    kernel_ver=`make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 kernelrelease`
 popd
 modules_dir=$(readlink -f ./out/output_*_kmodules/lib/modules/${kernel_ver})
 [ -d ${modules_dir} ] || {
 	echo "please build kernel first."
 	exit 1
 }
+
 firmware_dir="${top_path}/rtl8852be/lib/firmware/rtw89"
 config_dir="${top_path}/rtl8852be/etc/modules.d/"
 mkdir ${firmware_dir} ${config_dir} -p
@@ -25,7 +29,6 @@ wget https://github.com/armbian/firmware/blob/master/rtl8852bu_fw -O ${firmware_
 git clone https://github.com/lwfinger/rtw89.git -b main
 (cd rtw89 && {
 	git reset 38b8a48d04b8440266db6ea730e9b9cf84463981 --hard
-	export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64:$PATH
 
 	if grep 'symbol:backport' ${modules_dir}/modules.symbols >/dev/null; then
 		# kernel with backports
